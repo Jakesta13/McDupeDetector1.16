@@ -40,10 +40,13 @@ while read -r line; do
 	fi
 	user=$(echo "${line}" | awk '{print $10}')
 	if [ "${counter}" -eq "${trip}" ]; then
-		coords=$(grep "${user}.*logged in with" "${log}" | tail -n 1 | sed -e "s/.*${user}.*logged in with entity id.*at (//" -e 's/)//' -e 's/,//g' -e 's/\.[0-9]*/ /g' -e 's/  / /g')
-		userIP=$(grep "${user}.*logged in with" "${log}" | tail -n 1 | sed -e "s/.*${user}.*\[ logged.*//" -e "s=.*${user}\[/==" -e 's/:[0-9].*//')
+		# Behold my Optomization power .. Unfortunately doesn't really work with the above coordsSecond though... but still BEHOLD!
+		initGrab=$(grep "${user}.*logged in with" "${log}")
+		coords=$(echo "${initGrab}" | sed -e "s/.*${user}.*logged in with entity id.*at (//" -e 's/)//' -e 's/,//g' -e 's/\.[0-9]*/ /g' -e 's/  / /g')
+		userIP=$(echo "${initGrab}" | sed -e "s/.*${user}.*\[ logged.*//" -e "s=.*${user}\[/==" -e 's/:[0-9].*//')
 		if [ -z "${coords}" ]; then
 			coords="(Error, returned blank)"
+			unset initGrab
 		fi
 		msg="Playerdata for ${user} was not able to save!\n${user} was auto-banned on suspicion based on detection #${trip}.\n\nCoords: ${coords}\nIP: ${userIP}"
 		# Ban them and reset the counter
@@ -51,6 +54,7 @@ while read -r line; do
 		counter=0
 		unset coords
 		unset userIP
+		unset initGrab
 	else
 		if [ ! -z "${coordsSecond}" ]; then
 		msg="Playerdata for ${user} was not able to save!\nLikely duping, detection #${firstCoords}.\n\nCoords: ${coordsSecond}"
