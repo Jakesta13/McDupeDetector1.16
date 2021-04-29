@@ -10,8 +10,10 @@ Running your minecraft server on a linux machine is required, the code may not w
 
 
 ## Upcoming
-### Firework Dupe Detector.
-* Script is planned.
+### [FireworkDupe.sh](https://github.com/Jakesta13/McDupeDetector1.16/blob/master/FireworkDupe/FireworkDupe.sh)
+* Watches for firework related death messages (which there is only one, yay!) which occur right after logging out.
+* Built from looking at console output from legit examples, and tested using a false console line after a legit log-out.
+* Ability to notify the ban on discord, you will get their last login coordinates and their IP in the message in-case they were using an alt to run the dupe.
 
 ## Requirements
 * Running the server and script on Linux (Debian/Ubuntu should be fine)
