@@ -14,7 +14,9 @@ Running your minecraft server on a linux machine is required, the code may not w
 * Watches for firework related death messages (which there is only one, yay!) which occur right after logging out.
 * Built from looking at console output from legit examples, and tested using a false console line after a legit log-out.
 * Ability to notify the ban on discord, you will get their last login coordinates and their IP in the message in-case they were using an alt to run the dupe.
-
+* There is the ability to stop the script in the case it goes ramptant (as it is single-detection based after all),
+it shouldn't but the option is there to disable in-game (Reguires manual restart of script if ran)
+You can disable this by commenting out the break-word line.
 ## Requirements
 * Running the server and script on Linux (Debian/Ubuntu should be fine)
 * Rcon is enabled on the server.

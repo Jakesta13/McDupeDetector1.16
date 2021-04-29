@@ -23,6 +23,10 @@ pass="SecretPassword123"
 # Ban Message
 ban="Dupe Suspicion"
 
+## Break this script with a word/phrase
+### Must match exact wording and is case-sensitive.
+# Note: Don't use single quotes .. it breaks.. the break word... Haven't tried it via setting a vairable though...
+TheBreakWord="Why isnt Cobble Here?"
 
 ### Functions, don't touch
 function mcban {
@@ -40,7 +44,7 @@ counter=0
 tail -q -F -n 1 "${log}" | grep --line-buffered -a "\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Server thread/INFO\]:"|
 while read -r line; do
 	# Pi Addition - Killword
-	breakWord=$(echo "${line}" | grep "\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Server thread/INFO\]: <.*> Why Isnt Cobble Here?")
+	breakWord=$(echo "${line}" | grep "\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Server thread/INFO\]: <.*> ${TheBreakWord}")
 	if [ -n "${breakWord}" ]; then
 		break
 	fi
