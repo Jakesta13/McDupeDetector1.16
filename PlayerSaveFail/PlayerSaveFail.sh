@@ -23,12 +23,19 @@ pass="SecretPassword123"
 
 # Function
 function mcban {
-if [ ! -z "${user}" ]; then
-	${mcrcon} -H "${IP}" -P "${port}" -p "${pass}" "ban ${user} ${ban}"
+if [ -n "${user}" ]; then
+	"${mcrcon}" -H "${IP}" -P "${port}" -p "${pass}" "ban ${user} ${ban}"
+	unset user
+	unset userIP
+	unset counter
+	unset coords
+	unset initGrab
+	counter=0
 fi
 }
 tail -q -F -n 1 "${log}" | grep --line-buffered -a "\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Server thread/WARN\]: Failed to save player data for"|
 while read -r line; do
+	user=$(echo "${line}" | awk '{print $10}')
 	if [ "${user}" == "${lastUser}" ]; then
 		counter=$((counter + 1))
 	else
@@ -38,7 +45,6 @@ while read -r line; do
 	if [ "${counter}" -eq "${firstCoords}" ]; then
 		coordsSecond=$(grep "${user}.*logged in with" "${log}" | tail -n 1 | sed -e "s/.*${user}.*logged in with entity id.*at (//" -e 's/)//' -e 's/,//g' -e 's/\.[0-9]*/ /g' -e 's/  / /g')
 	fi
-	user=$(echo "${line}" | awk '{print $10}')
 	if [ "${counter}" -eq "${trip}" ]; then
 		# Behold my Optomization power .. Unfortunately doesn't really work with the above coordsSecond though... but still BEHOLD!
 		initGrab=$(grep "${user}.*logged in with" "${log}")
@@ -49,14 +55,10 @@ while read -r line; do
 			unset initGrab
 		fi
 		msg="Playerdata for ${user} was not able to save!\n${user} was auto-banned on suspicion based on detection #${trip}.\n\nCoords: ${coords}\nIP: ${userIP}"
-		# Ban them and reset the counter
+		# Ban them and reset the counter (unsets are now within the function)
 		mcban
-		counter=0
-		unset coords
-		unset userIP
-		unset initGrab
 	else
-		if [ ! -z "${coordsSecond}" ]; then
+		if [ -n "${coordsSecond}" ]; then
 		msg="Playerdata for ${user} was not able to save!\nLikely duping, detection #${firstCoords}.\n\nCoords: ${coordsSecond}"
 		else
 		msg="Playerdata for ${user} was not able to save!\nThere's a chance this could be a dupe attempt."
